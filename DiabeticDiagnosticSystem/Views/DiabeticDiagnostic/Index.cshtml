@@ -1,0 +1,44 @@
+﻿@model IEnumerable<DiabeticSystem.Common.Models.PatientDetails>
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script src="~/Scripts/custom/PatientDetails.js"></script>
+</head>
+<body>
+    <div class="container"> 
+        <div class="row">
+            <div class="col-sm-12">
+                <div style="float:right;">
+                    @Html.TextBox("bloodgroup", null, new { @id="txtSearchBlood",@placeholder="Search Blood Group"})
+                    @Html.TextBox("appointmentdate", null, new { @id = "txtAppointment", @placeholder = "MM/DD/YYYY" })    
+                    <input type="button" value="Search" class="btn btn-primary" id="btnSearch" />
+                </div>
+            </div>
+           
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div id="tblAllPatients">                   
+                    @Html.Partial("_PatientDetails", Model)                    
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                @Html.ActionLink("Add Patient Test Results", "AddPatientTestResult", null, new { @class = "btn btn-primary" })
+            </div>
+        </div>
+    </div>
+
+    
+</body>
+</html>

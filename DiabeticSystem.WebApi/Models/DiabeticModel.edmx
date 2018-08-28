@@ -1,0 +1,242 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="DiabeticSystemModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="DiabeticAdmin">
+          <Key>
+            <PropertyRef Name="AdminId" />
+          </Key>
+          <Property Name="AdminId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="Password" Type="varchar" MaxLength="20" Nullable="false" />
+        </EntityType>
+        <EntityType Name="PatientMembershipDetails">
+          <Key>
+            <PropertyRef Name="MembershipId" />
+          </Key>
+          <Property Name="MembershipId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PatientId" Type="int" Nullable="false" />
+          <Property Name="TestRemaining" Type="int" Nullable="false" />
+          <Property Name="BookedDate" Type="datetime" Nullable="false" />
+          <Property Name="ExpirationDate" Type="date" />
+        </EntityType>
+        <EntityType Name="PatientPersonal">
+          <Key>
+            <PropertyRef Name="PatientId" />
+          </Key>
+          <Property Name="PatientId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="Age" Type="int" Nullable="false" />
+          <Property Name="Email" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="BloodGroup" Type="varchar" MaxLength="5" />
+          <Property Name="Password" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="PatientTestResults">
+          <Key>
+            <PropertyRef Name="TestId" />
+          </Key>
+          <Property Name="TestId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PatientId" Type="int" Nullable="false" />
+          <Property Name="SugarBeforeFasting" Type="int" Nullable="false" />
+          <Property Name="SugarAfterFasting" Type="int" Nullable="false" />
+          <Property Name="TestDate" Type="date" />
+        </EntityType>
+        <Association Name="FK_PatientMembershipDetails_PatientPersonal">
+          <End Role="PatientPersonal" Type="Self.PatientPersonal" Multiplicity="1" />
+          <End Role="PatientMembershipDetails" Type="Self.PatientMembershipDetails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PatientPersonal">
+              <PropertyRef Name="PatientId" />
+            </Principal>
+            <Dependent Role="PatientMembershipDetails">
+              <PropertyRef Name="PatientId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PatientTestResults_PatientPersonal">
+          <End Role="PatientPersonal" Type="Self.PatientPersonal" Multiplicity="1" />
+          <End Role="PatientTestResults" Type="Self.PatientTestResults" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PatientPersonal">
+              <PropertyRef Name="PatientId" />
+            </Principal>
+            <Dependent Role="PatientTestResults">
+              <PropertyRef Name="PatientId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="DiabeticSystemModelStoreContainer">
+          <EntitySet Name="DiabeticAdmin" EntityType="Self.DiabeticAdmin" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PatientMembershipDetails" EntityType="Self.PatientMembershipDetails" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PatientPersonal" EntityType="Self.PatientPersonal" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PatientTestResults" EntityType="Self.PatientTestResults" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_PatientMembershipDetails_PatientPersonal" Association="Self.FK_PatientMembershipDetails_PatientPersonal">
+            <End Role="PatientPersonal" EntitySet="PatientPersonal" />
+            <End Role="PatientMembershipDetails" EntitySet="PatientMembershipDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PatientTestResults_PatientPersonal" Association="Self.FK_PatientTestResults_PatientPersonal">
+            <End Role="PatientPersonal" EntitySet="PatientPersonal" />
+            <End Role="PatientTestResults" EntitySet="PatientTestResults" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="DiabeticSystemModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="PatientMembershipDetail">
+          <Key>
+            <PropertyRef Name="MembershipId" />
+          </Key>
+          <Property Name="MembershipId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PatientId" Type="Int32" Nullable="false" />
+          <Property Name="TestRemaining" Type="Int32" Nullable="false" />
+          <Property Name="BookedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="PatientPersonal" Relationship="Self.FK_PatientMembershipDetails_PatientPersonal" FromRole="PatientMembershipDetails" ToRole="PatientPersonal" />
+          <Property Name="ExpirationDate" Type="DateTime" Precision="0" />
+        </EntityType>
+        <EntityType Name="PatientPersonal">
+          <Key>
+            <PropertyRef Name="PatientId" />
+          </Key>
+          <Property Name="PatientId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Age" Type="Int32" Nullable="false" />
+          <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="BloodGroup" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="PatientMembershipDetails" Relationship="Self.FK_PatientMembershipDetails_PatientPersonal" FromRole="PatientPersonal" ToRole="PatientMembershipDetails" />
+          <NavigationProperty Name="PatientTestResults" Relationship="Self.FK_PatientTestResults_PatientPersonal" FromRole="PatientPersonal" ToRole="PatientTestResults" />
+        </EntityType>
+        <EntityType Name="PatientTestResult">
+          <Key>
+            <PropertyRef Name="TestId" />
+          </Key>
+          <Property Name="TestId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PatientId" Type="Int32" Nullable="false" />
+          <Property Name="SugarBeforeFasting" Type="Int32" Nullable="false" />
+          <Property Name="SugarAfterFasting" Type="Int32" Nullable="false" />
+          <Property Name="TestDate" Type="DateTime" Precision="0" />
+          <NavigationProperty Name="PatientPersonal" Relationship="Self.FK_PatientTestResults_PatientPersonal" FromRole="PatientTestResults" ToRole="PatientPersonal" />
+        </EntityType>
+        <Association Name="FK_PatientMembershipDetails_PatientPersonal">
+          <End Role="PatientPersonal" Type="Self.PatientPersonal" Multiplicity="1" />
+          <End Role="PatientMembershipDetails" Type="Self.PatientMembershipDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PatientPersonal">
+              <PropertyRef Name="PatientId" />
+            </Principal>
+            <Dependent Role="PatientMembershipDetails">
+              <PropertyRef Name="PatientId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PatientTestResults_PatientPersonal">
+          <End Role="PatientPersonal" Type="Self.PatientPersonal" Multiplicity="1" />
+          <End Role="PatientTestResults" Type="Self.PatientTestResult" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PatientPersonal">
+              <PropertyRef Name="PatientId" />
+            </Principal>
+            <Dependent Role="PatientTestResults">
+              <PropertyRef Name="PatientId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="DiabeticSystemEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="PatientMembershipDetails" EntityType="Self.PatientMembershipDetail" />
+          <EntitySet Name="PatientPersonals" EntityType="Self.PatientPersonal" />
+          <EntitySet Name="PatientTestResults" EntityType="Self.PatientTestResult" />
+          <AssociationSet Name="FK_PatientMembershipDetails_PatientPersonal" Association="Self.FK_PatientMembershipDetails_PatientPersonal">
+            <End Role="PatientPersonal" EntitySet="PatientPersonals" />
+            <End Role="PatientMembershipDetails" EntitySet="PatientMembershipDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PatientTestResults_PatientPersonal" Association="Self.FK_PatientTestResults_PatientPersonal">
+            <End Role="PatientPersonal" EntitySet="PatientPersonals" />
+            <End Role="PatientTestResults" EntitySet="PatientTestResults" />
+          </AssociationSet>
+          <EntitySet Name="DiabeticAdmins" EntityType="DiabeticSystemModel.DiabeticAdmin" />
+        </EntityContainer>
+        <EntityType Name="DiabeticAdmin">
+          <Key>
+            <PropertyRef Name="AdminId" />
+          </Key>
+          <Property Name="AdminId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Password" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+        </EntityType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="DiabeticSystemModelStoreContainer" CdmEntityContainer="DiabeticSystemEntities">
+          <EntitySetMapping Name="PatientMembershipDetails">
+            <EntityTypeMapping TypeName="DiabeticSystemModel.PatientMembershipDetail">
+              <MappingFragment StoreEntitySet="PatientMembershipDetails">
+                <ScalarProperty Name="ExpirationDate" ColumnName="ExpirationDate" />
+                <ScalarProperty Name="MembershipId" ColumnName="MembershipId" />
+                <ScalarProperty Name="PatientId" ColumnName="PatientId" />
+                <ScalarProperty Name="TestRemaining" ColumnName="TestRemaining" />
+                <ScalarProperty Name="BookedDate" ColumnName="BookedDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PatientPersonals">
+            <EntityTypeMapping TypeName="DiabeticSystemModel.PatientPersonal">
+              <MappingFragment StoreEntitySet="PatientPersonal">
+                <ScalarProperty Name="PatientId" ColumnName="PatientId" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Age" ColumnName="Age" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="BloodGroup" ColumnName="BloodGroup" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PatientTestResults">
+            <EntityTypeMapping TypeName="DiabeticSystemModel.PatientTestResult">
+              <MappingFragment StoreEntitySet="PatientTestResults">
+                <ScalarProperty Name="TestId" ColumnName="TestId" />
+                <ScalarProperty Name="PatientId" ColumnName="PatientId" />
+                <ScalarProperty Name="SugarBeforeFasting" ColumnName="SugarBeforeFasting" />
+                <ScalarProperty Name="SugarAfterFasting" ColumnName="SugarAfterFasting" />
+                <ScalarProperty Name="TestDate" ColumnName="TestDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DiabeticAdmins">
+            <EntityTypeMapping TypeName="DiabeticSystemModel.DiabeticAdmin">
+              <MappingFragment StoreEntitySet="DiabeticAdmin">
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="AdminId" ColumnName="AdminId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

@@ -1,0 +1,59 @@
+﻿
+@model IEnumerable<DiabeticSystem.Common.Models.PatientDetails>
+<link href="~/Content/custom.css" rel="stylesheet" />
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+            <span><b>List of Patients</b></span>
+        </div>
+    </div>
+</div>
+
+<br />
+<br />
+<div class="container container-fluid">
+    <div class="row">
+        <div class="col-sm-12">
+            <table class="table table-bordered table-responsive table-hover">
+
+                <thead style="background-color:lightgray;">
+                    <tr>
+                        <td>Name </td>
+                        <td>Age </td>
+                        <td> Blood Group </td>
+                        <td>Email</td>
+                        
+                        <td>Sugar Level Before Fasting</td>
+                        <td>Sugar Level After Fasting</td>
+                        <td>Test Date</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null)
+                    {
+                        foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@item.Name</td>
+                                    <td>@item.Age</td>
+                                    <td>@item.BloodGroup</td>
+                                    <td>@item.Email</td>
+                                    <td>@item.SugarLevelBeforeFasting</td>
+                                    <td>@item.SugarLevelAfterFasting</td>
+                                    <td>@item.TestDate.ToShortDateString()</td>
+                                </tr>
+
+                            }
+                    }
+
+                   
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+
+
