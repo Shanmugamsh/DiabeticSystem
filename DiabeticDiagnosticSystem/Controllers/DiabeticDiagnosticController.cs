@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using DiabeticSystem.Common.Models;
-using System.Configuration;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
-using DiabeticDiagnosticSystem.Helper;
+﻿using DiabeticDiagnosticSystem.Helper;
 using DiabeticSystem.Common;
+using DiabeticSystem.Common.Models;
+using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Web.Mvc;
 
 namespace DiabeticDiagnosticSystem.Controllers
 {
@@ -29,13 +25,12 @@ namespace DiabeticDiagnosticSystem.Controllers
         public async Task<ActionResult> Index(string bloodGroup, string appointmentDate)
         {
             List<PatientDetails> patients = await apiCall.GetAllPatientDetails(bloodGroup, appointmentDate);
+            ViewBag.BloodGroup = GenerateBloodGroup.ReadBloodGroups();
             return View(patients);
         }
+        
 
-        [NonAction]
-
-
-        [HttpPost]
+        [HttpGet]
         public async Task<ActionResult> AllPatientDetails(string bloodgroup, string appointmentdate)
         {
 
@@ -43,8 +38,7 @@ namespace DiabeticDiagnosticSystem.Controllers
             return PartialView("_PatientDetails", patients.AsEnumerable());
         }
 
-        [HttpGet]
-      //  [ChildActionOnly]
+        [HttpGet]        
         public async Task<ActionResult> AddPatientTestResult()
         {
             List<SelectListItem> patients = new List<SelectListItem>();
@@ -64,20 +58,19 @@ namespace DiabeticDiagnosticSystem.Controllers
             return View();
         }
 
-        [HttpPost]
-       // [ChildActionOnly]
+        [HttpPost]        
         public async Task<ActionResult> AddPatientTestResult(PatientTestSummary testsummary)
         {
             List<PatientDetails> patientDetails = new List<PatientDetails>();
             try
             {
-                patientDetails = await apiCall.SubmitPatientTestResults(testsummary);
-                return RedirectToAction("Index", "DiabeticDiagnostic");
+                patientDetails = await apiCall.SubmitPatientTestResults(testsummary);                
+                return RedirectToAction(nameof(Index), "DiabeticDiagnostic");
             }
             catch (Exception)
             {
 
-                ModelState.AddModelError("Error", "Something went wrong");
+                ModelState.AddModelError(string.Empty, "Something went wrong. Please try again");
                 return View();
             }
 
@@ -99,15 +92,15 @@ namespace DiabeticDiagnosticSystem.Controllers
 
             if (isAdmin)
             {
-                return RedirectToAction("Index");
+                return RedirectToAction(nameof(Index));
             }
             else
             {
                 ModelState.AddModelError(string.Empty, Constants.InvalidUserPassword);
-               
+
                 return View();
             }
-           
+
         }
 
         [HttpGet]
@@ -122,10 +115,10 @@ namespace DiabeticDiagnosticSystem.Controllers
             PatientSummary patients = null;
             patients = await apiCall.LoginPatient(model);
 
-            if (patients!=null)
+            if (patients != null)
             {
                 TempData["Patients"] = patients;
-                return RedirectToAction("PatientSummary");
+                return RedirectToAction(nameof(PatientSummary));
             }
             else
             {
@@ -136,11 +129,11 @@ namespace DiabeticDiagnosticSystem.Controllers
         }
 
         [HttpGet]
-       // [ChildActionOnly]
+        // [ChildActionOnly]
         public ActionResult PatientSummary()
         {
             PatientSummary patients = (PatientSummary)TempData["Patients"];
-            if (patients!=null)
+            if (patients != null)
             {
                 return View(patients);
             }
@@ -159,13 +152,13 @@ namespace DiabeticDiagnosticSystem.Controllers
         {
 
             await apiCall.RegisterPatient(model);
-            return RedirectToAction("PatientLogin");
+            return RedirectToAction(nameof(PatientLogin));
         }
 
         [HttpGet]
         public async Task<ActionResult> CheckUserNameExists(string username)
         {
-            string patientesponse = "";
+            string patientesponse = string.Empty;
 
             bool isusernameExists = await apiCall.IsUserNameAlreadyExists(username);
 

@@ -24,7 +24,7 @@ namespace DiabeticDiagnosticSystem.Helper
                 client.DefaultRequestHeaders.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                HttpResponseMessage Res = await client.GetAsync($"api/DiabeticApi/GetAllPatientDetails?bloodgroup={bloodGroup}&testdate={appointmentDate}");
+                HttpResponseMessage Res = await client.GetAsync($"api/DiabeticApi/GetAllPatientDetails?bloodgroup={HttpUtility.UrlEncode(bloodGroup)}&testdate={appointmentDate}");
 
                 //Checking the response is successful or not which is sent using HttpClient  
                 if (Res.IsSuccessStatusCode)

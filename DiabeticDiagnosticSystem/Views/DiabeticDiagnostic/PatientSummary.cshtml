@@ -11,6 +11,16 @@
     <meta name="viewport" content="width=device-width" />
     <title>PatientSummary</title>
     <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/jquery.datatable.min.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script src="~/Scripts/jquery.datatable.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#tblPatientSummary').DataTable({ searching: true, paging: false, info: false });
+        });
+       
+    </script>
+
 </head>
 <body>
     
@@ -54,7 +64,7 @@
     <div class="container">
         <div class="row">
             <div class="col-sm-12">
-                <table class="table table-bordered table-responsive table-hover">
+                <table class="table table-bordered table-responsive table-hover" id="tblPatientSummary">
                     <thead style="background-color:lightgray;">
                         <tr>
                             <td>Test Date</td>
@@ -74,7 +84,7 @@
                                 foreach (var item in Model.PatientTestResults)
                                 {
                                     <tr>
-                                        <td>@item.TestDate</td>
+                                        <td>@item.TestDate.ToShortDateString()</td>
                                         <td>@item.SugarLevelBeforeFasting</td>
                                         <td>@item.SugarLevelAfterFasting</td>
                                     </tr>

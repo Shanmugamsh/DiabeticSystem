@@ -1,15 +1,19 @@
 ﻿$(document).ready(function () {
+
+    $('#txtAppointment').datepicker();
+
+    $('#tblAllPatients').DataTable({ searching: true, paging: false, info: false });
+
    
 
     $('body').on('click', '#btnSearch', function () {
-       // alert($('#txtAppointment').val());
-       // var model = { 'bloodgroup': $('#txtSearchBlood').val(), 'appointmentdate': $('#txtAppointment').val() };
+      
         $.ajax({
             url: '/DiabeticDiagnostic/AllPatientDetails',
-            type: 'POST',
-           // datatype: "json",
+            type: 'GET',
+            datatype: "json",
            // contenttype: 'application/json; charset=utf-8',
-            data: { 'bloodgroup': $('#txtSearchBlood').val(), 'appointmentdate': $('#txtAppointment').val() },
+            data: { 'bloodgroup': $('#BloodGroup :selected').text(), 'appointmentdate': $('#txtAppointment').val() },
             async: true,
             success: function (data) {
                 $("#tblAllPatients").html(data);

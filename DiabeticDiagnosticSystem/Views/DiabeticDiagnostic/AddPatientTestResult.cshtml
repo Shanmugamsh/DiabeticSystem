@@ -3,6 +3,7 @@
 @{
     ViewBag.Title = "AddPatientTestResult";
 }
+<link href="~/Content/Jquery-Ui-1.12.css" rel="stylesheet" />
 
 <h2>Add Patient Test Result</h2>
 
@@ -24,9 +25,9 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.TestDate, htmlAttributes: new { @class = "control-label col-md-2", @placeholder = "MM/DD/YYYY" })
+            @Html.LabelFor(model => model.TestDate, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.TestDate, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.EditorFor(model => model.TestDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "MM/DD/YYYY", @id= "txtAppointment" } })
                 @Html.ValidationMessageFor(model => model.TestDate, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -58,3 +59,10 @@
 <div>
     @Html.ActionLink("Back to Patient Details", "Index")
 </div>
+@section scripts {
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/Jquery1-ui-1.12.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+<script src="~/Scripts/custom/PatientDetails.js"></script>
+}
