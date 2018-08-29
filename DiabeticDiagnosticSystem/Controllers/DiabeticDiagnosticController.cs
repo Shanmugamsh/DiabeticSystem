@@ -44,7 +44,7 @@ namespace DiabeticDiagnosticSystem.Controllers
         }
 
         [HttpGet]
-        [ChildActionOnly]
+      //  [ChildActionOnly]
         public async Task<ActionResult> AddPatientTestResult()
         {
             List<SelectListItem> patients = new List<SelectListItem>();
@@ -65,7 +65,7 @@ namespace DiabeticDiagnosticSystem.Controllers
         }
 
         [HttpPost]
-        [ChildActionOnly]
+       // [ChildActionOnly]
         public async Task<ActionResult> AddPatientTestResult(PatientTestSummary testsummary)
         {
             List<PatientDetails> patientDetails = new List<PatientDetails>();
@@ -136,7 +136,7 @@ namespace DiabeticDiagnosticSystem.Controllers
         }
 
         [HttpGet]
-        [ChildActionOnly]
+       // [ChildActionOnly]
         public ActionResult PatientSummary()
         {
             PatientSummary patients = (PatientSummary)TempData["Patients"];

@@ -168,10 +168,14 @@
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\custom.css" />
+    <Content Include="Content\images\admin - Copy.png" />
     <Content Include="Content\images\admin.png" />
     <Content Include="Content\images\CheckAvailability.jpg" />
+    <Content Include="Content\images\login - Copy.jpg" />
     <Content Include="Content\images\login.jpg" />
     <Content Include="Content\images\member.png" />
+    <Content Include="Content\images\newPatient - Copy.jpg" />
     <Content Include="Content\images\newPatient.jpg" />
     <Content Include="Content\images\register.png" />
     <Content Include="favicon.ico" />
