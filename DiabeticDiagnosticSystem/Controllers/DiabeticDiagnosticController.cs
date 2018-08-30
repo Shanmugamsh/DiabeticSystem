@@ -7,6 +7,7 @@ using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using System.Web.Security;
 
 namespace DiabeticDiagnosticSystem.Controllers
 {
@@ -24,9 +25,16 @@ namespace DiabeticDiagnosticSystem.Controllers
         }
         public async Task<ActionResult> Index(string bloodGroup, string appointmentDate)
         {
-            List<PatientDetails> patients = await apiCall.GetAllPatientDetails(bloodGroup, appointmentDate);
-            ViewBag.BloodGroup = GenerateBloodGroup.ReadBloodGroups();
-            return View(patients);
+
+            if (Session["IsAdmin"]!=null && (bool)Session["IsAdmin"])
+            {
+                List<PatientDetails> patients = await apiCall.GetAllPatientDetails(bloodGroup, appointmentDate);
+                return View(patients);
+            }
+            else
+            {
+                return RedirectToAction(nameof(Error));
+            }
         }
         
 
@@ -38,24 +46,32 @@ namespace DiabeticDiagnosticSystem.Controllers
             return PartialView("_PatientDetails", patients.AsEnumerable());
         }
 
-        [HttpGet]        
+        [HttpGet]  
+       
         public async Task<ActionResult> AddPatientTestResult()
         {
-            List<SelectListItem> patients = new List<SelectListItem>();
-            Dictionary<int, string> patientNames = null;
-
-            var myListItems = new List<SelectListItem>();
-
-            patientNames = await apiCall.GetPatientNames();
-
-            patients.AddRange(patientNames.Select(keyValuePair => new SelectListItem()
+            if (Session["IsAdmin"] != null && (bool)Session["IsAdmin"])
             {
-                Value = keyValuePair.Key.ToString(),
-                Text = keyValuePair.Value
-            }));
+                List<SelectListItem> patients = new List<SelectListItem>();
+                Dictionary<int, string> patientNames = null;
 
-            ViewBag.PatientNames = patients;
-            return View();
+                var myListItems = new List<SelectListItem>();
+
+                patientNames = await apiCall.GetPatientNames();
+
+                patients.AddRange(patientNames.Select(keyValuePair => new SelectListItem()
+                {
+                    Value = keyValuePair.Key.ToString(),
+                    Text = keyValuePair.Value
+                }));
+
+                ViewBag.PatientNames = patients;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction(nameof(Error));
+            }
         }
 
         [HttpPost]        
@@ -77,7 +93,7 @@ namespace DiabeticDiagnosticSystem.Controllers
         }
 
 
-
+        [AllowAnonymous]
         [HttpGet]
         public ActionResult AdminLogin()
         {
@@ -92,6 +108,8 @@ namespace DiabeticDiagnosticSystem.Controllers
 
             if (isAdmin)
             {
+                Session["IsAdmin"] = true;
+                FormsAuthentication.SetAuthCookie("Suresh", true);
                 return RedirectToAction(nameof(Index));
             }
             else
@@ -103,6 +121,7 @@ namespace DiabeticDiagnosticSystem.Controllers
 
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public ActionResult PatientLogin()
         {
@@ -117,7 +136,7 @@ namespace DiabeticDiagnosticSystem.Controllers
 
             if (patients != null)
             {
-               // TempData["Patients"] = patients;
+                FormsAuthentication.SetAuthCookie(patients.Name, true);
                 Session["LoggedInUser"] = patients;
                 return RedirectToAction(nameof(PatientSummary));
             }
@@ -129,8 +148,7 @@ namespace DiabeticDiagnosticSystem.Controllers
 
         }
 
-        [HttpGet]
-        // [ChildActionOnly]
+        [HttpGet]        
         public ActionResult PatientSummary()
         {
             
@@ -139,7 +157,11 @@ namespace DiabeticDiagnosticSystem.Controllers
                 PatientSummary patients = (PatientSummary)Session["LoggedInUser"];
                 return View(patients);
             }
-            return View();
+            else
+            {
+                return RedirectToAction(nameof(Error));
+            }
+           
         }
 
         [HttpGet]
@@ -172,8 +194,35 @@ namespace DiabeticDiagnosticSystem.Controllers
         [HttpPost]
         public async Task<ActionResult> RenewPatientMembership(int patientId)
         {
-            PatientSummary summary = await apiCall.RenewPatientMembership(patientId);
-            return PartialView("_PatientPersonalDetails", summary);
+            if (Session["LoggedInUser"] != null)
+            {
+                PatientSummary summary = await apiCall.RenewPatientMembership(patientId);
+                Session["LoggedInUser"] = summary;
+                return PartialView("_PatientPersonalDetails", summary);
+            }
+            else
+            {
+                return RedirectToAction(nameof(Error));
+            }
+        }
+
+        public ActionResult Logout()
+        {
+            ClearSession();
+            return RedirectToAction(nameof(Home));
+        }
+
+        public ActionResult Error()
+        {
+            return View();
+        }
+               
+        private void ClearSession()
+        {
+            Session["IsAdmin"] = null;
+            Session["LoggedInUser"] = null;
+            FormsAuthentication.SignOut();
+            Session.Abandon();
         }
     }
 }

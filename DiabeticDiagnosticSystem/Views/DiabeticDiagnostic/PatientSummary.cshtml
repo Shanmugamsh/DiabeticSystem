@@ -1,6 +1,6 @@
 ﻿@model DiabeticSystem.Common.Models.PatientSummary
 @{
-    Layout = null;
+    Layout = "~/Views/Shared/_Layout.cshtml";
 
 }
 
@@ -15,7 +15,53 @@
     <script src="~/Scripts/jquery-1.10.2.min.js"></script>
     <script src="~/Scripts/jquery.datatable.min.js"></script>
     <script src="~/Scripts/custom/PatientSummary.js"></script>  
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        google.charts.load('current', { 'packages': ['corechart'] });
+        google.charts.setOnLoadCallback(drawChart);
 
+        function drawChart() {
+            //var data = google.visualization.arrayToDataTable([
+            //    ['Date', 'Sugar Before Fasting', 'Sugar After Fasting'],
+            //    ['8/15/2018', 100, 120],
+            //    ['8/1/2018', 120, 140],
+            //    ['7/15/2018', 140, 150]
+
+            //]);
+            // debugger
+            var chartModel = @Html.Raw(Json.Encode(Model.PatientTestResults));
+
+            var array = new Array();
+            array[0] = ['Date', 'Sugar Before Fasting', 'Sugar After Fasting'];
+            let i = 1;
+            chartModel.forEach(function (element) {
+
+                array[i] = [ConvertToDate(element.TestDate), element.SugarLevelBeforeFasting, element.SugarLevelAfterFasting];
+                i++;
+                // console.log(Date.parse(element.TestDate));
+            });
+            debugger
+          var data = google.visualization.arrayToDataTable(array);
+
+
+            var options = {
+                title: 'Your Sugar Level',
+                curveType: 'function',
+                legend: { position: 'bottom' }
+            };
+
+            var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+
+            chart.draw(data, options);
+        }
+
+        function ConvertToDate(testdate)
+        {
+            var date = new Date(parseInt(testdate.replace("/Date(", "").replace(")/", ""), 10));
+            return date;
+
+        }
+    </script>
 </head>
 <body>
     <br/>
@@ -74,5 +120,7 @@
             </div>
         </div>
     </div>
+
+    <div id="curve_chart" style="width: 900px; height: 500px"></div>
 </body>
 </html>

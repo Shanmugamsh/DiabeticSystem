@@ -19,7 +19,7 @@
                     if (data == '' || data == "") {
                         $('#btnRegister').attr('disabled', false);
                         $('#msgUserExists').css('display', 'none');
-                        $('#Name').attr('disabled', true);
+                        $('#Name').prop('readonly', true);
                         //$('#msgUserExists').addClass('glyphicon glyphicon-ok');
                         //$('#msgUserExists').removeClass('glyphicon glyphicon-remove');
 
@@ -29,7 +29,7 @@
                         $('#msgUserExists').text('Try different user name');
                         $('#msgUserExists').css('color', 'red');
                         $('#msgUserExists').css('display', 'block');
-                        $('#Name').attr('disabled', false);
+                        $('#Name').prop('readonly', false);
 
                         //$('#msgUserExists').addClass('glyphicon glyphicon-remove');
                         //$('#msgUserExists').removeClass('glyphicon glyphicon-ok');

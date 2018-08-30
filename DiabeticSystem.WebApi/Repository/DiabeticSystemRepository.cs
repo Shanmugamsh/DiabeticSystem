@@ -10,7 +10,6 @@ namespace DiabeticSystem.WebApi.Repository
 {
     public class DiabeticSystemRepository : IDiabeticSystemRepository
     {
-
         public int AddPatientDetails(PatientDetails patientModel)
         {
             int patientId = 0;
@@ -26,8 +25,6 @@ namespace DiabeticSystem.WebApi.Repository
                         Email = patientModel.Email,
                         Password = patientModel.Password
                     };
-
-
 
                     context.PatientPersonals.Add(personal);
                     context.SaveChanges();
@@ -57,8 +54,6 @@ namespace DiabeticSystem.WebApi.Repository
 
             return patientId;
         }
-
-
 
         public bool CheckUserNameExists(string username)
         {
@@ -240,16 +235,43 @@ namespace DiabeticSystem.WebApi.Repository
             {
                 using (DiabeticSystemEntities context = new DiabeticSystemEntities())
                 {
-                    int userid = (from p in context.PatientPersonals
+                    int patientid = (from p in context.PatientPersonals
                                   where p.Name.ToLower() == username.ToLower() &&
                                   p.Password == password.ToLower()
                                   select p.PatientId).FirstOrDefault();
-                    if (userid > 0)
+                    if (patientid > 0)
                     {
+                        summary = GetAPatientDataByPatientId(patientid);
+                    }
+                    else
+                    {
+                        summary = null;
+                    }
+                }
+            }
+            catch (Exception err)
+            {
+
+                throw;
+            }
+
+            return summary;
+        }
+
+
+        private PatientSummary GetAPatientDataByPatientId(int patientId)
+        {
+            PatientSummary summary = new PatientSummary();            
+            List<PatientTestSummary> testsummary = new List<PatientTestSummary>();
+
+            try
+            {
+                using (DiabeticSystemEntities context = new DiabeticSystemEntities())
+                {  
                         summary = (from p in context.PatientPersonals
                                    join member in context.PatientMembershipDetails
                                    on p.PatientId equals member.PatientId
-                                   where p.PatientId == userid
+                                   where p.PatientId == patientId
                                    select new PatientSummary()
                                    {
 
@@ -267,7 +289,7 @@ namespace DiabeticSystem.WebApi.Repository
                         testsummary = (from p in context.PatientPersonals
                                        join test in context.PatientTestResults
                                        on p.PatientId equals test.PatientId
-                                       where p.PatientId == userid
+                                       where p.PatientId == patientId
                                        select new PatientTestSummary()
                                        {
                                            PatientId = p.PatientId,
@@ -277,11 +299,8 @@ namespace DiabeticSystem.WebApi.Repository
                                        }).ToList();
 
                         summary.PatientTestResults = testsummary;
-                    }
-                    else
-                    {
-                        summary = null;
-                    }
+                    
+                    
                 }
             }
             catch (Exception err)
@@ -296,6 +315,7 @@ namespace DiabeticSystem.WebApi.Repository
         public PatientSummary RenewPatientPlan(int patientid)
         {
             PatientSummary patientData = new PatientSummary();
+            List<PatientTestSummary> testsummary = new List<PatientTestSummary>();
             try
             {
                 using (DiabeticSystemEntities context = new DiabeticSystemEntities())
@@ -311,23 +331,7 @@ namespace DiabeticSystem.WebApi.Repository
                     context.Entry(memberDetail).State = EntityState.Modified;
                     context.SaveChanges();
 
-                    patientData = (from p in context.PatientPersonals
-                                   join member in context.PatientMembershipDetails
-                                   on p.PatientId equals member.PatientId
-                                   where p.PatientId == patientid
-                                   select new PatientSummary()
-                                   {
-
-                                       Id = p.PatientId,
-                                       Name = p.Name,
-                                       Age = p.Age,
-                                       Email = p.Email,
-                                       BloodGroup = p.BloodGroup,
-                                       TestRemaining = member.TestRemaining,
-                                       ExpiresOn = member.BookedDate //member.BookedDate.AddMonths(3)
-                                   }).FirstOrDefault();
-
-                    patientData.ExpiresOn = patientData.ExpiresOn.AddMonths(3);
+                    patientData = GetAPatientDataByPatientId(patientid);
                 }
             }
             catch (Exception err)

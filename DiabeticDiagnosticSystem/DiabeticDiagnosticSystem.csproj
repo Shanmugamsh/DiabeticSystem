@@ -169,7 +169,7 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\custom.css" />
-    <Content Include="Content\images\admin - Copy.png" />
+    <Content Include="Content\images\admin-login.jpg" />
     <Content Include="Content\images\admin.png" />
     <Content Include="Content\images\CheckAvailability.jpg" />
     <Content Include="Content\images\login - Copy.jpg" />
@@ -229,6 +229,7 @@
     <Content Include="Views\DiabeticDiagnostic\AdminLogin.cshtml" />
     <Content Include="Views\DiabeticDiagnostic\AddPatientTestResult.cshtml" />
     <Content Include="Views\Shared\_PatientPersonalDetails.cshtml" />
+    <Content Include="Views\DiabeticDiagnostic\Error.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
