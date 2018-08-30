@@ -11,5 +11,6 @@ namespace DiabeticSystem.Common
     {
         public const string UserExists = "User name already exists. Please try different user";
         public const string InvalidUserPassword = "Invalid Username / Password";
+        public const int MembershipMonths = 3;
     }
 }

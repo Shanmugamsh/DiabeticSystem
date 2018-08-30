@@ -117,7 +117,8 @@ namespace DiabeticDiagnosticSystem.Controllers
 
             if (patients != null)
             {
-                TempData["Patients"] = patients;
+               // TempData["Patients"] = patients;
+                Session["LoggedInUser"] = patients;
                 return RedirectToAction(nameof(PatientSummary));
             }
             else
@@ -132,9 +133,10 @@ namespace DiabeticDiagnosticSystem.Controllers
         // [ChildActionOnly]
         public ActionResult PatientSummary()
         {
-            PatientSummary patients = (PatientSummary)TempData["Patients"];
-            if (patients != null)
+            
+            if (Session["LoggedInUser"] != null)
             {
+                PatientSummary patients = (PatientSummary)Session["LoggedInUser"];
                 return View(patients);
             }
             return View();
@@ -165,6 +167,13 @@ namespace DiabeticDiagnosticSystem.Controllers
             patientesponse = isusernameExists ? Constants.UserExists : string.Empty;
 
             return Json(patientesponse, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> RenewPatientMembership(int patientId)
+        {
+            PatientSummary summary = await apiCall.RenewPatientMembership(patientId);
+            return PartialView("_PatientPersonalDetails", summary);
         }
     }
 }

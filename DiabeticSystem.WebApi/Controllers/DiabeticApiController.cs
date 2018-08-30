@@ -55,14 +55,14 @@ namespace DiabeticSystem.WebApi.Controllers
         [HttpPost]
         public IHttpActionResult RenewMembership(int patientid)
         {
-            repository.RenewPatientPlan(patientid);
-            return Ok("Success");
+            PatientSummary summary = repository.RenewPatientPlan(patientid);
+            return Ok(summary);
         }
 
         [HttpGet]
         public IHttpActionResult ReadPatientNames()
         {
-            Dictionary<int,string> namelist = repository.ReadAllPatientNames();
+            Dictionary<int, string> namelist = repository.ReadAllPatientNames();
             return Ok(namelist);
         }
 

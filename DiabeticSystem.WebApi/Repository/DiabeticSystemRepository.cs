@@ -1,10 +1,10 @@
-﻿using DiabeticSystem.Common.Models;
+﻿using DiabeticSystem.Common;
+using DiabeticSystem.Common.Models;
 using DiabeticSystem.WebApi.Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Data.Entity;
-using System.Web.Mvc;
+using System.Linq;
 
 namespace DiabeticSystem.WebApi.Repository
 {
@@ -34,7 +34,7 @@ namespace DiabeticSystem.WebApi.Repository
                     patientId = (from p in context.PatientPersonals
                                  orderby p.PatientId descending
                                  select p.PatientId).Take(1).SingleOrDefault();
-                                
+
 
                     PatientMembershipDetail membership = new PatientMembershipDetail()
                     {
@@ -111,7 +111,7 @@ namespace DiabeticSystem.WebApi.Repository
                                         BloodGroup = personal.BloodGroup,
                                         SugarLevelBeforeFasting = test.SugarBeforeFasting,
                                         SugarLevelAfterFasting = test.SugarAfterFasting,
-                                        TestDate=test.TestDate.Value,
+                                        TestDate = test.TestDate.Value,
                                         //TestRemaining = member.TestRemaining,
                                         //ExpiresOn = Convert.ToString(member.BookedDate.AddMonths(3))
                                     }).ToList();
@@ -293,8 +293,9 @@ namespace DiabeticSystem.WebApi.Repository
             return summary;
         }
 
-        public void RenewPatientPlan(int patientid)
+        public PatientSummary RenewPatientPlan(int patientid)
         {
+            PatientSummary patientData = new PatientSummary();
             try
             {
                 using (DiabeticSystemEntities context = new DiabeticSystemEntities())
@@ -304,11 +305,29 @@ namespace DiabeticSystem.WebApi.Repository
                                                             select member).FirstOrDefault();
 
                     int remainingtest = memberDetail.TestRemaining;
-                    memberDetail.TestRemaining = (remainingtest + 6);
+                    memberDetail.TestRemaining = (remainingtest + (Constants.MembershipMonths * 2));
                     memberDetail.BookedDate = System.DateTime.Now.Date;
-                    memberDetail.ExpirationDate = DateTime.Now.Date.AddMonths(3);
+                    memberDetail.ExpirationDate = DateTime.Now.AddMonths(3);
                     context.Entry(memberDetail).State = EntityState.Modified;
                     context.SaveChanges();
+
+                    patientData = (from p in context.PatientPersonals
+                                   join member in context.PatientMembershipDetails
+                                   on p.PatientId equals member.PatientId
+                                   where p.PatientId == patientid
+                                   select new PatientSummary()
+                                   {
+
+                                       Id = p.PatientId,
+                                       Name = p.Name,
+                                       Age = p.Age,
+                                       Email = p.Email,
+                                       BloodGroup = p.BloodGroup,
+                                       TestRemaining = member.TestRemaining,
+                                       ExpiresOn = member.BookedDate //member.BookedDate.AddMonths(3)
+                                   }).FirstOrDefault();
+
+                    patientData.ExpiresOn = patientData.ExpiresOn.AddMonths(3);
                 }
             }
             catch (Exception err)
@@ -316,11 +335,13 @@ namespace DiabeticSystem.WebApi.Repository
 
                 throw;
             }
+
+            return patientData;
         }
 
         public Dictionary<int, string> ReadAllPatientNames()
         {
-           // SelectList patientnames = null;
+            // SelectList patientnames = null;
             Dictionary<int, string> nameValue = new Dictionary<int, string>();
             try
             {
@@ -334,7 +355,7 @@ namespace DiabeticSystem.WebApi.Repository
                         nameValue.Add(item.Value, item.Text);
                     }
 
-                   // patientnames = new SelectList(nameValue, "Key", "Value");
+                    // patientnames = new SelectList(nameValue, "Key", "Value");
                 }
             }
             catch (Exception err)

@@ -14,6 +14,34 @@ namespace DiabeticDiagnosticSystem.Helper
     public class ApiCall
     {
         private string azureapiaddress = ConfigurationManager.AppSettings["azureapiaddress"];
+
+
+        public async Task<PatientSummary> RenewPatientMembership(int patientId)
+        {
+            PatientSummary patientsummary = new PatientSummary();
+
+            using (HttpClient client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(azureapiaddress);
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                HttpResponseMessage Res = await client.PostAsJsonAsync($"api/DiabeticApi/RenewMembership?patientid={patientId}", patientsummary);
+
+                if (Res.IsSuccessStatusCode)
+                {
+                    //Storing the response details recieved from web api   
+                    var response = Res.Content.ReadAsStringAsync().Result;
+
+                    //Deserializing the response recieved from web api and storing into the Employee list  
+                    patientsummary = JsonConvert.DeserializeObject<PatientSummary>(response);
+
+                }
+            }
+            return patientsummary;
+
+        }
+
         public async Task<List<PatientDetails>> GetAllPatientDetails(string bloodGroup, string appointmentDate)
         {
             List<PatientDetails> patients = new List<PatientDetails>();
@@ -181,7 +209,7 @@ namespace DiabeticDiagnosticSystem.Helper
                 if (Res.IsSuccessStatusCode)
                 {
                     //Storing the response details recieved from web api   
-                  var  response = Res.Content.ReadAsStringAsync().Result;
+                    var response = Res.Content.ReadAsStringAsync().Result;
 
                     isExists = JsonConvert.DeserializeObject<bool>(response);
                 }

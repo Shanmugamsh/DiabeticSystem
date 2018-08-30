@@ -14,7 +14,7 @@ namespace DiabeticSystem.WebApi.Repository
 
         List<PatientDetails> GetAllPatientDetails(string bloodgroup, string testdate);
 
-        void RenewPatientPlan(int patientid);
+        PatientSummary RenewPatientPlan(int patientid);
 
         List<PatientDetails> AddPatientTestResult(PatientTestSummary patientModel);
 
