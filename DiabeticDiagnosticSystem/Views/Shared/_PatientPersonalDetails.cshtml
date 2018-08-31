@@ -1,0 +1,36 @@
+﻿@model  DiabeticSystem.Common.Models.PatientDetails
+
+
+<div class="container">
+@if (Model != null)
+{
+    <div class="row">
+        <div class="col-sm-6"><span>Patient ID</span></div>
+        <div class="col-sm-6"><span id="lblPatientId">@Model.Id</span></div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6"><span>Name</span></div>
+        <div class="col-sm-6">@Model.Name</div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6"><span>Age</span></div>
+        <div class="col-sm-6">@Model.Age</div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6"><span>Blood Group</span></div>
+        <div class="col-sm-6">@Model.BloodGroup</div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6"><span>Email</span></div>
+        <div class="col-sm-6">@Model.Email</div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6"><span>Test Remaining</span></div>
+        <div class="col-sm-6">@Model.TestRemaining</div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6"><span>Expires On</span></div>
+        <div class="col-sm-6">@Model.ExpiresOn.ToShortDateString()</div>
+    </div>
+}
+</div>
