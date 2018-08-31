@@ -1,0 +1,25 @@
+﻿
+@{
+    ViewBag.Title = "Home";
+}
+
+<h2></h2>
+<div class="container body-content">
+    <div class="jumbotron">
+       <div class="row">
+           <div class="col-sm-4">
+              
+               <a href='@Url.Action("AdminLogin","DiabeticDiagnostic")'><img src="~/Content/images/admin.png" id="imgAdmin" class="btn" /></a>
+           </div>
+           <div class="col-sm-4">
+               <a href='@Url.Action("PatientRegister","DiabeticDiagnostic")'><img src="~/Content/images/newPatient.jpg" id="imgRegister" style="height:180px;" class="btn" /></a>              
+           </div>
+           <div class="col-sm-4">
+               <a href='@Url.Action("PatientLogin","DiabeticDiagnostic")'><img src="~/Content/images/login.jpg" id="imgLogin" class="btn" /></a>               
+           </div>
+       </div>
+
+    </div>
+</div>
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/custom/UserNavigation.js"></script>

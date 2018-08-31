@@ -1,0 +1,92 @@
+﻿@model DiabeticSystem.Common.Models.PatientSummary
+@{
+    Layout = null;
+
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>PatientSummary</title>
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body>
+    
+        @if (Model != null)
+        {
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-6"><span>Patient ID</span></div>
+                    <div class="col-sm-6">@Model.Id</div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6"><span>Name</span></div>
+                    <div class="col-sm-6">@Model.Name</div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6"><span>Age</span></div>
+                    <div class="col-sm-6">@Model.Age</div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6"><span>Blood Group</span></div>
+                    <div class="col-sm-6">@Model.BloodGroup</div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6"><span>Email</span></div>
+                    <div class="col-sm-6">@Model.Email</div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6"><span>Test Remaining</span></div>
+                    <div class="col-sm-6">@Model.TestRemaining</div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6"><span>Expires On</span></div>
+                    <div class="col-sm-6">@Model.ExpiresOn</div>
+                </div>
+            </div>
+        }
+
+    
+    <br />
+    <br />
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <table class="table table-bordered table-responsive table-hover">
+                    <thead style="background-color:lightgray;">
+                        <tr>
+                            <td>Test Date</td>
+                            <td>Sugar Level Before Fasting</td>
+                            <td>Sugar Level After Fasting</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null)
+                        {
+                            if (Model.PatientTestResults==null || Model.PatientTestResults.Count==0)
+                            {
+                                <tr><td colspan="3">No test(s) done so far </td></tr>
+                            }
+                            else
+                            {
+                                foreach (var item in Model.PatientTestResults)
+                                {
+                                    <tr>
+                                        <td>@item.TestDate</td>
+                                        <td>@item.SugarLevelBeforeFasting</td>
+                                        <td>@item.SugarLevelAfterFasting</td>
+                                    </tr>
+                                }
+                            }
+
+                        }
+                       
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
